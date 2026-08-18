@@ -18,6 +18,30 @@ rule: "Ogni cosa che il quiz chiede è spiegata per esteso qui sotto. Nessun acr
 ## Il problema che risolve
 Un sistema che funziona per 100 utenti spesso si rompe a 100.000: la stessa architettura non regge il carico. **System design** è decidere *come strutturare un sistema perché regga la scala, resti veloce e non cada quando qualcosa si rompe.* Prima un acronimo che useremo: **QPS = Queries Per Second**, richieste al secondo — la misura base del carico.
 
+<figure style="margin:18px 0;text-align:center">
+<svg viewBox="0 0 680 250" style="max-width:100%;height:auto;font-family:inherit">
+  <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="var(--muted)" stroke-width="1.4"/></marker></defs>
+  <g font-size="12.5" fill="var(--ink)" text-anchor="middle">
+   <rect x="8" y="103" width="92" height="40" rx="9" fill="var(--card)" stroke="var(--rule)"/><text x="54" y="127">Client</text>
+   <rect x="142" y="103" width="124" height="40" rx="9" fill="var(--card)" stroke="var(--accent)" stroke-width="1.7"/><text x="204" y="127">Load Balancer</text>
+   <rect x="308" y="26" width="112" height="36" rx="9" fill="var(--card)" stroke="var(--rule)"/><text x="364" y="48">App server</text>
+   <rect x="308" y="103" width="112" height="36" rx="9" fill="var(--card)" stroke="var(--rule)"/><text x="364" y="125">App server</text>
+   <rect x="308" y="180" width="112" height="36" rx="9" fill="var(--card)" stroke="var(--rule)"/><text x="364" y="202">App server</text>
+   <rect x="462" y="40" width="126" height="36" rx="9" fill="var(--card)" stroke="var(--accent)" stroke-width="1.7"/><text x="525" y="62">Cache (Redis)</text>
+   <rect x="462" y="150" width="104" height="36" rx="9" fill="var(--card)" stroke="var(--rule)"/><text x="514" y="172">DB primary</text>
+   <rect x="600" y="150" width="74" height="36" rx="9" fill="var(--card)" stroke="var(--rule)"/><text x="637" y="172">Replica</text>
+  </g>
+  <g stroke="var(--muted)" stroke-width="1.4" fill="none" marker-end="url(#ar)">
+   <path d="M100,123 L140,123"/>
+   <path d="M266,118 L306,46"/><path d="M266,123 L306,121"/><path d="M266,128 L306,196"/>
+   <path d="M420,44 L460,56"/><path d="M420,121 L460,60"/>
+   <path d="M420,127 L460,162"/><path d="M420,198 L460,170"/>
+   <path d="M566,168 L598,168"/>
+  </g>
+</svg>
+<figcaption style="font-size:12px;color:var(--muted);margin-top:4px">Le quattro leve in uno schema: Client → Load Balancer → App server (stateless, scalati orizzontalmente) → Cache + DB (con read-replica).</figcaption>
+</figure>
+
 ---
 
 ## 1. Scalabilità: verticale vs orizzontale

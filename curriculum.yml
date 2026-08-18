@@ -9,6 +9,7 @@
 #  - COMPLETENESS CHECK: verifico la lezione e INTEGRO ciò che manca (le slide a volte sono scarne);
 #  - PIÙ esempi concreti (meglio se legati al suo lavoro) + un case study reale;
 #  - NOTABLE USE CASE di grandi aziende quando esistono (es. "come lo fa Netflix/Google/…");
+#  - SCHEMI: includi diagrammi SVG/immagini dove chiariscono (architetture, flussi, matrici come il BMC);
 #  - in fondo: FONTI (siti) + CONCETTI ADIACENTI (anche non trattati all'uni, es. system design);
 #  - QUIZ ~10 domande, TUTTE rispondibili SOLO col contenuto della lezione (mai chiedere dati non spiegati);
 #    risposte lavorate a scomparsa; se fallito, il topic torna in coda (spaced repetition).

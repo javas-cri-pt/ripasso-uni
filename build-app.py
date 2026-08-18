@@ -110,12 +110,17 @@ function save(){localStorage.setItem(KEY,JSON.stringify(ST));}
 const byId=Object.fromEntries(DATA.lessons.map(l=>[l.topic_id,l]));
 // mini markdown → html
 function md(s){
- s=s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
- const lines=s.split("\n");let out=[],i=0;
- function inline(t){return t
+ const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+ function inline(t){return esc(t)
    .replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/(^|[^*])\*(?!\s)(.+?)\*/g,"$1<i>$2</i>")
    .replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank">$1</a>');}
+ const lines=s.split("\n");let out=[],i=0;
  while(i<lines.length){let l=lines[i];
+  const hb=l.match(/^\s*<(svg|figure|div|table|img|pre)\b/i);
+  if(hb){const tag=hb[1].toLowerCase();let buf=[];
+    while(i<lines.length){buf.push(lines[i]);
+      if(new RegExp("</"+tag+">","i").test(lines[i])||(tag==="img"&&/>/.test(lines[i]))){i++;break;}i++;}
+    out.push(buf.join("\n"));continue;}
   if(/^###\s/.test(l)){out.push("<h3>"+inline(l.slice(4))+"</h3>");i++;continue;}
   if(/^##\s/.test(l)){out.push("<h2>"+inline(l.slice(3))+"</h2>");i++;continue;}
   if(/^#\s/.test(l)){out.push("<h1>"+inline(l.slice(2))+"</h1>");i++;continue;}
