@@ -312,7 +312,24 @@ cross_cutting:
       - {id: xc-pat-review, name: "Pattern GoF ricorrenti nel lavoro reale", adjacent: [se-patterns]}
   - id: xc-llmeng
     name: LLM / AI Engineering
-    why: "il tuo lavoro attuale (Glacom, MaiCare)"
+    why: "il tuo lavoro attuale (Glacom, MaiCare) e ruolo target (AI/LLM Engineer)"
     topics:
-      - {id: xc-llm-rag, name: "RAG, retrieval ibrido, prompting", adjacent: [ml-llm, dm-ai]}
-      - {id: xc-llm-agents, name: "Agenti, orchestrazione multi-agente, valutazione", adjacent: []}
+      - {id: xc-llm-fundamentals, name: "Come funziona un LLM (token, embedding, transformer, attention, context window)", adjacent: [ml-nn, ml-llm]}
+      - {id: xc-llm-prompting, name: "Prompting: zero/few-shot, chain-of-thought, structured output", adjacent: []}
+      - {id: xc-llm-vectordb, name: "Embedding, chunking, vector DB e reranking", adjacent: [prog-ds]}
+      - {id: xc-llm-rag, name: "RAG: tipi e architetture (naive, advanced, hybrid, graph, agentic)", adjacent: [ml-llm, dm-ai, xc-llm-vectordb]}
+      - {id: xc-llm-agents, name: "Agenti e sistemi multi-agente (tool use, orchestrazione, ReAct)", adjacent: [xc-llm-rag]}
+      - {id: xc-llm-eval, name: "Valutare sistemi LLM (evals, hallucination, guardrails)", adjacent: [ml-eval, qe-spc]}
+      - {id: xc-llm-finetune, name: "Fine-tuning vs RAG vs prompting: quando usare cosa", adjacent: [xc-llm-rag]}
+
+  - id: xc-pm
+    name: Product Management
+    why: "ruolo target (Technical PM / Product) — tangente al Project Management uni ma diverso"
+    topics:
+      - {id: xc-pm-role, name: "Cos'è il Product Management: discovery vs delivery, PM vs Project Manager", adjacent: [pm-agile, inn-npd]}
+      - {id: xc-pm-discovery, name: "Product discovery, user research, Jobs-to-be-Done", adjacent: [bp-canvas]}
+      - {id: xc-pm-prd, name: "PRD, user story, definizione del problema", adjacent: [se-requirements]}
+      - {id: xc-pm-prioritization, name: "Prioritizzazione: RICE, MoSCoW, Kano, value/effort", adjacent: [pm-schedule]}
+      - {id: xc-pm-metrics, name: "Metriche di prodotto: North Star, AARRR, retention, funnel", adjacent: [dm-analysis]}
+      - {id: xc-pm-experiment, name: "MVP, A/B testing, build-measure-learn (Lean Startup)", adjacent: [bp-canvas, ml-eval]}
+      - {id: xc-pm-roadmap, name: "Roadmapping, OKR, stakeholder management", adjacent: []}
