@@ -1,0 +1,317 @@
+# Ripasso Uni — concept curriculum (BACKBONE, fonte di verità per le lezioni giornaliere)
+# Escluso: matematica pura (Analisi, Geometria, Mat. Applicata, Fisica, Elettrotecnica, Elettronica, Controlli).
+# Ogni "topic" = una lezione giornaliera.
+#
+# SPEC LEZIONE (regole di Cristina — gold standard fissato in lessons/001):
+#  - spiegazione "come all'uni" (ancorata alle sue slide quando esistono) + versione più chiara/completa;
+#  - DETTAGLIO: spiega COME funzionano algoritmi/strategie; DEFINISCI ogni acronimo/termine al primo uso
+#    (niente gergo lasciato lì, es. "indici/read-replica/sharding" vanno spiegati per esteso);
+#  - COMPLETENESS CHECK: verifico la lezione e INTEGRO ciò che manca (le slide a volte sono scarne);
+#  - PIÙ esempi concreti (meglio se legati al suo lavoro) + un case study reale;
+#  - NOTABLE USE CASE di grandi aziende quando esistono (es. "come lo fa Netflix/Google/…");
+#  - in fondo: FONTI (siti) + CONCETTI ADIACENTI (anche non trattati all'uni, es. system design);
+#  - QUIZ ~10 domande, TUTTE rispondibili SOLO col contenuto della lezione (mai chiedere dati non spiegati);
+#    risposte lavorate a scomparsa; se fallito, il topic torna in coda (spaced repetition).
+#  - grounding pesca sia da argomenti STUDIATI sia da ADIACENTI rilevanti per il lavoro.
+
+meta:
+  owner: Cristina Ghionna
+  grounding_roots:
+    unibo: /Users/cri/Desktop/xsonal/UNIBO
+    polito: /Users/cri/Desktop/xsonal/POLITO
+  areas: [computer-science, management, cross-cutting]
+  status_values: [new, reviewing, mastered, to-repeat]
+
+# ─────────────────────────────  COMPUTER SCIENCE (UNIBO)  ─────────────────────────────
+courses:
+  - id: prog
+    area: computer-science
+    name: Programmazione & OOP (Fondamenti + Sistemi Software a Oggetti)
+    grounding: UNIBO/primoAnno/Fondamenti di Informatica 2
+    topics:
+      - {id: prog-oop, name: "Principi OOP (incapsulamento, ereditarietà, polimorfismo, astrazione)", adjacent: [se-patterns]}
+      - {id: prog-ds, name: "Strutture dati (liste, mappe, alberi, hash)", adjacent: [xc-dsa]}
+      - {id: prog-algo, name: "Algoritmi e complessità (Big-O, sorting, ricerca)", adjacent: [xc-dsa]}
+      - {id: prog-testing, name: "Testing e qualità del codice (unit test, JUnit)", adjacent: [se-testing, qe-spc]}
+
+  - id: logic
+    area: computer-science
+    name: Reti Logiche (concettuale)
+    grounding: UNIBO/primoAnno/reti logiche
+    topics:
+      - {id: logic-bool, name: "Algebra booleana e porte logiche", adjacent: [arch-cpu]}
+      - {id: logic-seq, name: "Reti combinatorie vs sequenziali, FSM", adjacent: []}
+
+  - id: arch
+    area: computer-science
+    name: Architetture dei Calcolatori
+    grounding: UNIBO/secondoAnno/Calcolatori elettronici
+    topics:
+      - {id: arch-isa, name: "CPU, ISA, ciclo fetch-decode-execute, assembly (DLX)", adjacent: [os-processes]}
+      - {id: arch-pipeline, name: "Pipelining e hazard", adjacent: []}
+      - {id: arch-mem, name: "Gerarchia di memoria, cache, località", adjacent: [os-memory]}
+
+  - id: os
+    area: computer-science
+    name: Sistemi Operativi
+    grounding: UNIBO/secondoAnno/Sistemi operativi
+    topics:
+      - {id: os-processes, name: "Processi e thread", adjacent: [arch-isa, xc-distsys]}
+      - {id: os-scheduling, name: "Scheduling della CPU", adjacent: []}
+      - {id: os-memory, name: "Gestione memoria e memoria virtuale (paging)", adjacent: [arch-mem]}
+      - {id: os-concurrency, name: "Concorrenza e sincronizzazione (mutex, semafori, monitor)", adjacent: [xc-distsys, xc-sysdesign]}
+      - {id: os-deadlock, name: "Deadlock (condizioni, prevenzione, evitamento)", adjacent: []}
+      - {id: os-fs, name: "File system", adjacent: []}
+      - {id: os-ipc, name: "IPC (pipe, message passing, memoria condivisa)", adjacent: [net-sockets]}
+
+  - id: db
+    area: computer-science
+    name: Basi di Dati / Sistemi Informativi
+    grounding: UNIBO/secondoAnno/Sistemi Informativi
+    topics:
+      - {id: db-er, name: "Modello relazionale e modellazione ER", adjacent: [is-bpmn]}
+      - {id: db-sql, name: "SQL (query, join, viste, trigger)", adjacent: []}
+      - {id: db-norm, name: "Normalizzazione (1NF-3NF, BCNF)", adjacent: []}
+      - {id: db-tx, name: "Transazioni e ACID", adjacent: [xc-distsys]}
+      - {id: db-index, name: "Indici e ottimizzazione query", adjacent: [xc-sysdesign]}
+      - {id: db-conc, name: "Controllo di concorrenza (lock, isolation levels)", adjacent: [os-concurrency]}
+
+  - id: net
+    area: computer-science
+    name: Reti di Calcolatori
+    grounding: UNIBO/terzoAnno/RDC
+    topics:
+      - {id: net-stack, name: "Modello ISO/OSI e TCP/IP", adjacent: []}
+      - {id: net-ip, name: "IP, routing, subnetting", adjacent: []}
+      - {id: net-transport, name: "TCP vs UDP, controllo congestione", adjacent: []}
+      - {id: net-app, name: "HTTP, DNS, TLS (livello applicativo)", adjacent: [web-http, sec-crypto]}
+      - {id: net-sockets, name: "Socket programming, RPC/RMI", adjacent: [os-ipc]}
+
+  - id: web
+    area: computer-science
+    name: Tecnologie Web & Progettazione Applicazioni Web
+    grounding: UNIBO/terzoAnno/TecWeb
+    topics:
+      - {id: web-http, name: "HTTP, client-server, REST", adjacent: [net-app, xc-apidesign]}
+      - {id: web-backend, name: "Server-side (servlet/JSP, Node/Express), sessioni e auth", adjacent: [sec-auth]}
+      - {id: web-frontend, name: "Frontend, SPA, React, AJAX", adjacent: []}
+      - {id: web-realtime, name: "WebSocket e comunicazione real-time", adjacent: [xc-sysdesign]}
+
+  - id: se
+    area: computer-science
+    name: Ingegneria del Software
+    grounding: UNIBO/terzoAnno/IngengeriaDelSoftware
+    topics:
+      - {id: se-requirements, name: "Analisi dei requisiti e casi d'uso", adjacent: [is-bpmn]}
+      - {id: se-uml, name: "UML (classi, sequenza, componenti)", adjacent: []}
+      - {id: se-patterns, name: "Design pattern (GoF: creational/structural/behavioral)", adjacent: [prog-oop, xc-patterns]}
+      - {id: se-arch, name: "Stili architetturali (layered, MVC, client-server, broker, microservizi)", adjacent: [xc-sysdesign]}
+      - {id: se-process, name: "Processi di sviluppo (waterfall, Agile/Scrum)", adjacent: [pm-agile]}
+      - {id: se-testing, name: "Testing e qualità del software", adjacent: [prog-testing, qe-spc]}
+
+  - id: ml
+    area: computer-science
+    name: Laboratorio IA e Machine Learning
+    grounding: null   # non nelle cartelle 2023 → da curriculum ufficiale + web
+    topics:
+      - {id: ml-basics, name: "ML: supervisionato vs non supervisionato, train/test", adjacent: []}
+      - {id: ml-eval, name: "Valutazione modelli (accuracy, precision/recall, overfitting)", adjacent: [qe-spc]}
+      - {id: ml-nn, name: "Reti neurali: fondamenti", adjacent: []}
+      - {id: ml-llm, name: "LLM, embedding, RAG (rilevante al lavoro)", adjacent: [xc-llmeng]}
+
+  - id: sysadmin
+    area: computer-science
+    name: Amministrazione di Sistemi (LAS)
+    grounding: UNIBO/terzoAnno/las
+    topics:
+      - {id: sa-linux, name: "Linux, shell scripting, permessi, processi", adjacent: [os-processes]}
+      - {id: sa-net, name: "SSH, servizi di rete, LDAP, SNMP", adjacent: [net-stack]}
+      - {id: sa-devops, name: "Automazione e amministrazione (ponte verso DevOps)", adjacent: [xc-devops]}
+
+  - id: sec
+    area: computer-science
+    name: Cybersecurity ed Ethical Hacking
+    grounding: UNIBO/terzoAnno/sicurezza
+    topics:
+      - {id: sec-cia, name: "Principi di sicurezza (CIA), threat modeling", adjacent: []}
+      - {id: sec-crypto, name: "Crittografia: simmetrica, asimmetrica, hash, TLS", adjacent: [net-app]}
+      - {id: sec-auth, name: "Autenticazione e autorizzazione (JWT, OAuth, least-privilege)", adjacent: [web-backend]}
+      - {id: sec-vulns, name: "Vulnerabilità comuni (OWASP: injection, XSS, SSRF)", adjacent: []}
+
+  - id: quality-cs
+    area: computer-science
+    name: Affidabilità e Controllo della Qualità
+    grounding: null
+    topics:
+      - {id: relq-basics, name: "Affidabilità, tasso di guasto, FMEA (lato CS)", adjacent: [qe-fmeca]}
+
+  - id: law
+    area: computer-science
+    name: Diritto dell'Informatica
+    grounding: UNIBO/terzoAnno/diritto
+    topics:
+      - {id: law-privacy, name: "Privacy e GDPR", adjacent: []}
+      - {id: law-ip, name: "Proprietà intellettuale, licenze software", adjacent: []}
+
+  - id: bizorg
+    area: computer-science
+    name: Economia e Organizzazione Aziendale (UNIBO)
+    grounding: UNIBO/secondoAnno/Economia e organizzazione aziendale
+    topics:
+      - {id: bo-costs, name: "Costi, break-even, organizzazione d'impresa (base)", adjacent: [acc-statements, econ-micro]}
+
+  # ─────────────────────────────  MANAGEMENT (POLITO)  ─────────────────────────────
+  - id: acc
+    area: management
+    name: Accounting & Corporate Finance
+    grounding: POLITO/primo anno/Accounting and Corporate Finance
+    topics:
+      - {id: acc-statements, name: "Bilancio: stato patrimoniale, conto economico, cash flow", adjacent: [bo-costs]}
+      - {id: acc-ratios, name: "Analisi di bilancio (indici)", adjacent: []}
+      - {id: acc-corpfin, name: "Corporate finance: NPV, costo del capitale, valutazione", adjacent: [gov-valuation]}
+
+  - id: econ
+    area: management
+    name: Economics & Industrial Economics
+    grounding: POLITO/primo anno/Economics
+    topics:
+      - {id: econ-micro, name: "Microeconomia (domanda/offerta, elasticità)", adjacent: []}
+      - {id: econ-macro, name: "Macroeconomia (base)", adjacent: []}
+      - {id: econ-industry, name: "Strutture di mercato e analisi di settore", adjacent: [strat-frameworks]}
+
+  - id: is
+    area: management
+    name: Information Systems
+    grounding: POLITO/primo anno/Information systems
+    topics:
+      - {id: is-role, name: "Ruolo dei sistemi informativi in azienda, ERP", adjacent: []}
+      - {id: is-bpmn, name: "Modellazione dei processi (BPMN)", adjacent: [se-requirements, db-er]}
+
+  - id: prod
+    area: management
+    name: Analysis & Management of Production Systems
+    grounding: POLITO/primo anno/Analysis and management of production systems
+    topics:
+      - {id: prod-planning, name: "Pianificazione della produzione, layout, capacità", adjacent: []}
+      - {id: prod-lean, name: "Lean, inventory, supply chain (base)", adjacent: []}
+
+  - id: bizlaw
+    area: management
+    name: Business Law
+    grounding: POLITO/primo anno/Business law
+    topics:
+      - {id: bl-contracts, name: "Contratti e diritto societario (base)", adjacent: [law-ip]}
+
+  - id: strat
+    area: management
+    name: Strategy & Organization
+    grounding: POLITO/primo anno/Strategy&Organization
+    topics:
+      - {id: strat-frameworks, name: "Strategia (Porter 5 forze, SWOT, catena del valore)", adjacent: [econ-industry, inn-frameworks]}
+      - {id: strat-org, name: "Progettazione organizzativa", adjacent: []}
+
+  - id: gov
+    area: management
+    name: Corporate Governance & Finance
+    grounding: POLITO/secondo anno/corporate governance and finance
+    topics:
+      - {id: gov-governance, name: "Corporate governance", adjacent: []}
+      - {id: gov-valuation, name: "Struttura del capitale e valutazione d'impresa", adjacent: [acc-corpfin]}
+
+  - id: pm
+    area: management
+    name: Project Management
+    grounding: POLITO/secondo anno/Project Management
+    topics:
+      - {id: pm-lifecycle, name: "Ciclo di vita del progetto, PMBOK, ISO 21502", adjacent: []}
+      - {id: pm-schedule, name: "Scheduling: WBS, CPM, Gantt", adjacent: []}
+      - {id: pm-risk, name: "Risk management", adjacent: [qe-fmeca]}
+      - {id: pm-evm, name: "Controllo: earned value, monitoraggio", adjacent: []}
+      - {id: pm-agile, name: "Agile / Scrum", adjacent: [se-process]}
+
+  - id: qe
+    area: management
+    name: Quality Engineering
+    grounding: POLITO/secondo anno/Quality Engineering
+    topics:
+      - {id: qe-qfd, name: "House of Quality (QFD)", adjacent: []}
+      - {id: qe-fmeca, name: "FMEA / FMECA", adjacent: [pm-risk, relq-basics]}
+      - {id: qe-spc, name: "Controllo statistico di processo (control charts)", adjacent: [ml-eval, se-testing]}
+      - {id: qe-dmaic, name: "DMAIC / Six Sigma (base)", adjacent: []}
+
+  - id: dm
+    area: management
+    name: Decision Making & AI for Business
+    grounding: POLITO/secondo anno/Decision Making and AI for Business Change
+    topics:
+      - {id: dm-analysis, name: "Analisi delle decisioni, decisioni data-driven", adjacent: []}
+      - {id: dm-ai, name: "AI/LLM per il business", adjacent: [ml-llm, xc-llmeng]}
+
+  - id: inn
+    area: management
+    name: Innovation Management & Product Development
+    grounding: POLITO/secondo anno/Economics and Innovation Management for the New Space Economy
+    topics:
+      - {id: inn-frameworks, name: "Innovation: fase fluida (Anderson-Tushman), dominant design, curva S", adjacent: [strat-frameworks]}
+      - {id: inn-diffusion, name: "Diffusione dell'innovazione (Rogers), value capture (Teece)", adjacent: []}
+      - {id: inn-npd, name: "New Product Development", adjacent: [bp-canvas]}
+
+  - id: bp
+    area: management
+    name: Business Planning / Imprenditorialità
+    grounding: POLITO/secondo anno/Imprenditorialità e business planning
+    topics:
+      - {id: bp-canvas, name: "Business Model Canvas & value proposition", adjacent: [inn-npd]}
+      - {id: bp-market, name: "Market analysis, TAM/SAM/SOM, PEST", adjacent: [econ-industry]}
+      - {id: bp-financials, name: "Financial modeling (capex/opex, breakeven, proiezioni)", adjacent: [acc-corpfin]}
+      - {id: bp-gtm, name: "Go-to-market e fundraising", adjacent: []}
+
+  - id: cloud
+    area: management
+    name: Cloud Computing Technologies
+    grounding: POLITO/secondo anno/Cloud Computing Technologies
+    topics:
+      - {id: cloud-models, name: "Modelli cloud (IaaS/PaaS/SaaS), deployment", adjacent: [xc-devops]}
+      - {id: cloud-virt, name: "Virtualizzazione e container", adjacent: [xc-devops]}
+      - {id: cloud-arch, name: "Architetture cloud e scalabilità", adjacent: [xc-sysdesign]}
+
+# ─────────────  CROSS-CUTTING / WORK-RELEVANT (adiacenti, non corsi uni)  ─────────────
+# Rilevanti per il lavoro anche se tangenti/assenti all'uni (es. system design).
+cross_cutting:
+  - id: xc-sysdesign
+    name: System Design
+    why: "rilevante al lavoro, tangente all'uni — richiesto spesso ai colloqui"
+    topics:
+      - {id: xc-sd-basics, name: "Fondamenti: scalabilità, load balancing, caching, CDN", adjacent: [cloud-arch]}
+      - {id: xc-sd-data, name: "Dati a scala: sharding, replicazione, CAP theorem", adjacent: [db-tx, xc-distsys]}
+      - {id: xc-sd-async, name: "Code, messaging, event-driven", adjacent: [web-realtime, os-ipc]}
+      - {id: xc-sd-micro, name: "Microservizi vs monolite, API gateway", adjacent: [se-arch, xc-apidesign]}
+      - {id: xc-sd-obs, name: "Osservabilità (logging, metrics, tracing), rate limiting", adjacent: []}
+  - id: xc-distsys
+    name: Distributed Systems (base)
+    topics:
+      - {id: xc-ds-consistency, name: "Consistenza, consenso, fault tolerance", adjacent: [db-tx, os-concurrency]}
+  - id: xc-apidesign
+    name: API Design
+    topics:
+      - {id: xc-api-rest, name: "REST/GraphQL, versioning, idempotenza, auth", adjacent: [web-http, sec-auth]}
+  - id: xc-devops
+    name: DevOps & Cloud-native
+    topics:
+      - {id: xc-do-cicd, name: "CI/CD", adjacent: [sa-devops]}
+      - {id: xc-do-containers, name: "Container e orchestrazione (Docker, Kubernetes)", adjacent: [cloud-virt]}
+      - {id: xc-do-iac, name: "Infrastructure as Code (Terraform)", adjacent: []}
+  - id: xc-dsa
+    name: Data Structures & Algorithms (ripasso da colloquio)
+    topics:
+      - {id: xc-dsa-review, name: "Ripasso DSA orientato ai colloqui", adjacent: [prog-ds, prog-algo]}
+  - id: xc-patterns
+    name: Design Patterns (ripasso)
+    topics:
+      - {id: xc-pat-review, name: "Pattern GoF ricorrenti nel lavoro reale", adjacent: [se-patterns]}
+  - id: xc-llmeng
+    name: LLM / AI Engineering
+    why: "il tuo lavoro attuale (Glacom, MaiCare)"
+    topics:
+      - {id: xc-llm-rag, name: "RAG, retrieval ibrido, prompting", adjacent: [ml-llm, dm-ai]}
+      - {id: xc-llm-agents, name: "Agenti, orchestrazione multi-agente, valutazione", adjacent: []}
