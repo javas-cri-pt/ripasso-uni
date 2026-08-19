@@ -14,6 +14,9 @@
 #  - QUIZ ~10 domande, TUTTE rispondibili SOLO col contenuto della lezione (mai chiedere dati non spiegati);
 #    risposte lavorate a scomparsa; se fallito, il topic torna in coda (spaced repetition).
 #  - grounding pesca sia da argomenti STUDIATI sia da ADIACENTI rilevanti per il lavoro.
+#  - TAGLIO PRATICO per i temi AI/ML (vettorializzazione, embedding, indicizzazione, retrieval,
+#    architetture di chatbot): spiega COME si costruisce e con QUALI tool reali, più che la matematica;
+#    la formula si mette solo se serve all'intuizione (es. coseno), mai come cuore della lezione.
 
 meta:
   owner: Cristina Ghionna
@@ -316,8 +319,9 @@ cross_cutting:
     topics:
       - {id: xc-llm-fundamentals, name: "Come funziona un LLM (token, embedding, transformer, attention, context window)", adjacent: [ml-nn, ml-llm]}
       - {id: xc-llm-prompting, name: "Prompting: zero/few-shot, chain-of-thought, structured output", adjacent: []}
-      - {id: xc-llm-vectordb, name: "Embedding, chunking, vector DB e reranking", adjacent: [prog-ds]}
+      - {id: xc-llm-vectordb, name: "Vettorializzazione, embedding, indicizzazione e retrieval (taglio pratico)", adjacent: [prog-ds, xc-llm-rag]}
       - {id: xc-llm-rag, name: "RAG: tipi e architetture (naive, advanced, hybrid, graph, agentic)", adjacent: [ml-llm, dm-ai, xc-llm-vectordb]}
+      - {id: xc-llm-chatbot-arch, name: "Architettura completa di un chatbot/assistente LLM (ingestion → retrieval → prompt → guardrail → memoria → UI/API)", adjacent: [xc-llm-rag, xc-sd-basics, xc-llm-agents]}
       - {id: xc-llm-agents, name: "Agenti e sistemi multi-agente (tool use, orchestrazione, ReAct)", adjacent: [xc-llm-rag]}
       - {id: xc-llm-eval, name: "Valutare sistemi LLM (evals, hallucination, guardrails)", adjacent: [ml-eval, qe-spc]}
       - {id: xc-llm-finetune, name: "Fine-tuning vs RAG vs prompting: quando usare cosa", adjacent: [xc-llm-rag]}
