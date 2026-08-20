@@ -104,13 +104,18 @@ courses:
   - id: se
     area: computer-science
     name: Ingegneria del Software
-    grounding: UNIBO/terzoAnno/IngengeriaDelSoftware
+    grounding: UNIBO/terzoAnno/IngengeriaDelSoftware   # progetto di riferimento: Signal (gruppo 13) — segnalazioni civiche
+    example_project: "Signal — app di segnalazioni civiche (bacheca comunale). Ruoli Utente/Amministratore; casi d'uso: Effettua Segnalazione, Prendi in carico, Richiedi terminazione, Ricerca, punti/premi. Parte di Cristina: analisi dei requisiti + architettura."
     topics:
-      - {id: se-requirements, name: "Analisi dei requisiti e casi d'uso", adjacent: [is-bpmn]}
+      - {id: se-intro, name: "Cos'è l'ingegneria del software, prodotto software e qualità", adjacent: []}
+      - {id: se-process, name: "Processo di sviluppo e ciclo di vita (waterfall, incrementale, Agile/Scrum)", adjacent: [pm-agile]}
+      - {id: se-requirements, name: "Analisi dei requisiti: raccolta, validazione, casi d'uso e scenari", adjacent: [is-bpmn, xc-pm-prd]}
+      - {id: se-analysis, name: "Analisi del problema: modello statico e dinamico, architettura logica", adjacent: [se-uml]}
       - {id: se-uml, name: "UML (classi, sequenza, componenti)", adjacent: []}
+      - {id: se-principles, name: "Principi di progettazione: rigidità/fragilità/immobilità, SOLID", adjacent: [se-patterns, xc-swe-clean]}
       - {id: se-patterns, name: "Design pattern (GoF: creational/structural/behavioral)", adjacent: [prog-oop, xc-patterns]}
       - {id: se-arch, name: "Stili architetturali (layered, MVC, client-server, broker, microservizi)", adjacent: [xc-sysdesign]}
-      - {id: se-process, name: "Processi di sviluppo (waterfall, Agile/Scrum)", adjacent: [pm-agile]}
+      - {id: se-vcs, name: "Sistemi di controllo delle versioni (Git: branch, merge, PR)", adjacent: [xc-swe-review, sa-devops]}
       - {id: se-testing, name: "Testing e qualità del software", adjacent: [prog-testing, qe-spc]}
 
   - id: ml
@@ -320,6 +325,7 @@ cross_cutting:
       - {id: xc-llm-fundamentals, name: "Come funziona un LLM (token, embedding, transformer, attention, context window)", adjacent: [ml-nn, ml-llm]}
       - {id: xc-llm-prompting, name: "Prompting: zero/few-shot, chain-of-thought, structured output", adjacent: []}
       - {id: xc-llm-vectordb, name: "Vettorializzazione, embedding, indicizzazione e retrieval (taglio pratico)", adjacent: [prog-ds, xc-llm-rag]}
+      - {id: xc-llm-chunking, name: "Chunking avanzato (fixed/recursive/semantic, parent-document, contextual retrieval, tabelle/codice)", adjacent: [xc-llm-vectordb, xc-llm-rag]}
       - {id: xc-llm-rag, name: "RAG: tipi e architetture (naive, advanced, hybrid, graph, agentic)", adjacent: [ml-llm, dm-ai, xc-llm-vectordb]}
       - {id: xc-llm-chatbot-arch, name: "Architettura completa di un chatbot/assistente LLM (ingestion → retrieval → prompt → guardrail → memoria → UI/API)", adjacent: [xc-llm-rag, xc-sd-basics, xc-llm-agents]}
       - {id: xc-llm-agents, name: "Agenti e sistemi multi-agente (tool use, orchestrazione, ReAct)", adjacent: [xc-llm-rag]}
@@ -337,3 +343,13 @@ cross_cutting:
       - {id: xc-pm-metrics, name: "Metriche di prodotto: North Star, AARRR, retention, funnel", adjacent: [dm-analysis]}
       - {id: xc-pm-experiment, name: "MVP, A/B testing, build-measure-learn (Lean Startup)", adjacent: [bp-canvas, ml-eval]}
       - {id: xc-pm-roadmap, name: "Roadmapping, OKR, stakeholder management", adjacent: []}
+
+  - id: xc-swe
+    name: Software Engineering (craft del lavoro)
+    why: "completa il profilo software/system engineer oltre il corso: pratica reale del mestiere"
+    topics:
+      - {id: xc-swe-clean, name: "Clean code e principi SOLID (in pratica)", adjacent: [se-principles, prog-oop]}
+      - {id: xc-swe-refactor, name: "Refactoring e debito tecnico", adjacent: [se-principles]}
+      - {id: xc-swe-tdd, name: "Testing strategy: unit/integration/e2e, TDD, mocking, test pyramid", adjacent: [se-testing, prog-testing]}
+      - {id: xc-swe-review, name: "Code review e collaborazione (PR, convenzioni, pair programming)", adjacent: [se-vcs]}
+      - {id: xc-swe-debug, name: "Debugging e profiling sistematico", adjacent: []}
