@@ -98,6 +98,12 @@ aside{border-right:1px solid var(--rule);padding:24px 16px 40px;position:sticky;
 .prog{color:var(--muted);font-size:12px;margin:2px 0 9px}
 .bar{height:7px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:18px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),color-mix(in oklab,var(--accent) 60%,var(--good)));border-radius:99px;transition:width .5s var(--ease)}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-8px 0 16px;font-size:12px;color:var(--muted)}
+.daynav .dl b{color:var(--ink);font-size:13px}
+.daynav .dctl{display:flex;align-items:center;gap:5px}
+.daynav .dctl button{width:26px;height:26px;padding:0;border-radius:7px;font-size:15px;line-height:1;font-weight:700}
+.daynav .dctl a{color:var(--accent-ink);cursor:pointer;font-weight:600;font-size:11.5px}
+.locked .cta.ghost{background:transparent;color:var(--accent-ink);border-color:color-mix(in oklab,var(--accent) 30%,var(--rule));margin-left:8px}
 .quick{list-style:none;display:flex;gap:7px;margin-bottom:20px}
 .quick li{flex:1;text-align:center;padding:9px 6px;border:1px solid var(--rule);border-radius:10px;cursor:pointer;
  font-size:12.5px;font-weight:600;color:var(--soft);background:var(--card);transition:.15s;display:flex;flex-direction:column;gap:3px;align-items:center}
@@ -200,6 +206,7 @@ button.ok.sel{background:var(--good);color:#fff;border-color:var(--good)}button.
     <button class="iconbtn" aria-label="Tema" onclick="toggleTheme()" style="width:32px;height:32px;font-size:15px">◐</button>
     <button class="iconbtn sclose" aria-label="Chiudi" onclick="closeNav()" style="width:32px;height:32px;font-size:15px">✕</button></div>
   <div class="prog" id="prog"></div><div class="bar"><i id="barfill"></i></div>
+  <div class="daynav" id="daynav"></div>
   <ul class="quick">
     <li id="q-today" onclick="openToday()"><span class="qi">◉</span>Oggi</li>
     <li id="q-hist" onclick="openHistory()"><span class="qi">✓</span>Storico</li>
@@ -234,6 +241,19 @@ function unlockDateOf(n){let d=new Date(anchor());d.setHours(0,0,0,0);let c=0;
  while(true){if(d.getDay()!==6){c++;if(c>=n)return new Date(d);}d.setDate(d.getDate()+1);}}
 function isUnlocked(l){return !l.day||l.day<=studyDay();}
 const fmtDate=d=>d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});
+// ---- posizionamento manuale del giorno (per riprendere da dove sei) ----
+const maxDay=()=>DATA.lessons.reduce((m,l)=>Math.max(m,l.day||0),1);
+function setDay(n){n=Math.max(1,Math.min(n,maxDay()));
+ let d=new Date();d.setHours(0,0,0,0);let c=0;
+ while(true){if(d.getDay()!==6){c++;if(c>=n)break;}d.setDate(d.getDate()-1);}
+ localStorage.setItem(SKEY,d.toISOString());renderNav();openToday();}
+function dayStep(k){setDay(Math.min(studyDay(),maxDay())+k);}
+function renderDay(){const el=document.getElementById("daynav");if(!el)return;
+ const tot=maxDay();const n=Math.min(studyDay(),tot);
+ el.innerHTML=`<span class="dl">Giorno <b>${n}</b>/${tot}</span>
+  <span class="dctl"><button onclick="dayStep(-1)" aria-label="giorno precedente">−</button>`+
+  `<button onclick="dayStep(1)" aria-label="giorno successivo">+</button>`+
+  `<a onclick="setDay(${tot})">all'ultima</a></span>`;}
 // ---- mini markdown → html ----
 function md(s){
  const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -275,7 +295,7 @@ function renderNav(){
  });
  nav.innerHTML=out;
  document.getElementById("prog").textContent=`${done}/${DATA.total} padroneggiati · ${DATA.lessons.length} lezioni pronte`;
- document.getElementById("barfill").style.width=(done/DATA.total*100)+"%";}
+ document.getElementById("barfill").style.width=(done/DATA.total*100)+"%";renderDay();}
 
 function openLesson(tid){cur=tid;closeNav();setQuick(null);const l=byId[tid];const m=document.getElementById("main");
  document.getElementById("tbtitle").textContent=l?l.title.split("—")[0].trim():"Ripasso Uni";
@@ -284,7 +304,7 @@ function openLesson(tid){cur=tid;closeNav();setQuick(null);const l=byId[tid];con
    m.innerHTML=`<div class="crumb">${escH(l.area)} · Giorno ${l.day}</div>
      <div class="locked"><div class="lk">🔒</div><b>Ancora chiusa</b>
      <p style="margin-top:8px">Una lezione al giorno (dom–ven). Questa si sblocca<br><b style="font-size:15px">${fmtDate(ud)}</b>.</p>
-     <p style="margin-top:14px"><button class="cta" onclick="openToday()">Vai alla lezione di oggi</button></p></div>`;
+     <p style="margin-top:14px"><button class="cta" onclick="openToday()">Vai alla lezione di oggi</button><button class="cta ghost" onclick="setDay(${l.day})">Riprendi da qui ora</button></p></div>`;
    window.scrollTo(0,0);renderNav();return;}
  window._marks={};
  let q=l.quiz.map((x,idx)=>`<div class="qcard" id="q${idx}"><div class="qq">${idx+1}. ${md(x.q).replace(/^<p>|<\/p>$/g,"")}</div>
