@@ -182,6 +182,19 @@ button.ok.sel{background:var(--good);color:#fff;border-color:var(--good)}button.
 .locked{text-align:center;padding:56px 20px;color:var(--muted)}
 .locked .lk{font-size:40px;margin-bottom:12px}.locked b{color:var(--ink);font-family:var(--serif);font-size:20px}
 .empty{color:var(--muted);margin-top:40px}
+/* ---- ripasso attivo (flashcard) ---- */
+.flash{max-width:640px}
+.fprog{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.fq{font-family:var(--serif);font-size:clamp(20px,4vw,25px);line-height:1.32;margin-bottom:16px;text-wrap:balance}
+.fa{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
+.fa.open{max-height:1600px}
+.fa-in{background:var(--card);border:1px solid color-mix(in oklab,var(--accent) 22%,var(--rule));border-radius:14px;padding:15px 17px;box-shadow:var(--shadow);color:var(--soft)}
+.fbtns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.fbtns button{flex:1;min-width:150px;padding:13px}
+.flash .ok{border-color:var(--good);color:var(--good)}.flash .no{border-color:var(--bad);color:var(--bad)}
+.flash .ok:hover{background:var(--good);color:#fff}.flash .no:hover{background:var(--bad);color:#fff}
+.fskip{margin-top:18px}.fskip a{color:var(--muted);cursor:pointer;font-size:13px}
+.fresult{text-align:center;padding:34px 0}.fresult b{font-family:var(--serif);font-size:27px}.fresult p{color:var(--muted);margin:10px auto 20px;max-width:420px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 /* ---- responsive: off-canvas drawer ---- */
 @media(max-width:820px){
@@ -395,12 +408,42 @@ function openReview(){cur="__rev__";closeNav();setQuick("q-review");renderNav();
  if(!rows.length){body=`<p class="lead">Nessun ripasso in scadenza oggi. 👏 Le lezioni tornano da sole a <b>intervalli crescenti</b> (1, 3, 7, 16, 35… giorni): se le sai bene le rivedi di rado, se le sbagli tornano presto. Intanto fai la <b>lezione di oggi</b>.</p>`;}
  else{body=`<p class="lead"><b>${rows.length}</b> da ripassare oggi. Tocca una lezione e rifai il quiz: se la sai la rivedrai più in là, se la sbagli torna domani.</p><ul class="hist">`+
    rows.map(l=>{const r=ST[l.topic_id];const rep=r.status==="to-repeat";
-     return `<li class="hrow" onclick="openLesson('${l.topic_id}')">
+     return `<li class="hrow" onclick="openFlash('${l.topic_id}')">
        <div class="hbadge ${rep?"rep":"ok"}">↻</div>
        <div><div class="ht">${escH(l.title.split("—")[0].trim())}</div>
        <div class="hm">${rep?"sbagliata · da rivedere":"ripasso programmato"} · ${escH(l.course)}</div></div>
        <span class="harrow">›</span></li>`;}).join("")+`</ul>`;}
  m.innerHTML=`<div class="crumb">Ripasso · spaced repetition</div><h1 class="pagehead">Ripassa oggi</h1>${body}`;
+ window.scrollTo(0,0);}
+
+// ---- ripasso attivo (flashcard: solo quiz, mescolato, una domanda alla volta) ----
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function openFlash(tid){const l=byId[tid];if(!l||!l.quiz.length)return openLesson(tid);
+ closeNav();setQuick("q-review");cur=null;
+ window._flash={tid,order:shuffle(l.quiz.map((_,i)=>i)),i:0,marks:{}};
+ document.getElementById("tbtitle").textContent="Ripasso attivo";renderFlash();}
+function renderFlash(){const f=window._flash;const l=byId[f.tid];const m=document.getElementById("main");
+ if(f.i>=f.order.length)return flashDone();
+ const x=l.quiz[f.order[f.i]];
+ m.innerHTML=`<div class="crumb">Ripasso attivo · ${escH(l.title.split("—")[0].trim())}</div>
+  <div class="flash">
+   <div class="fprog">Domanda ${f.i+1} / ${f.order.length}</div>
+   <div class="fq">${md(x.q).replace(/^<p>|<\/p>$/g,"")}</div>
+   <div class="fa" id="fa"><div class="fa-in">${md(x.a)}</div></div>
+   <div class="fbtns" id="fbtns"><button class="cta" onclick="flashReveal()">Prova a rispondere, poi mostra</button></div>
+   <div class="fskip"><a onclick="openLesson('${f.tid}')">📖 rileggi la lezione intera</a></div>
+  </div>`;
+ window.scrollTo(0,0);}
+function flashReveal(){document.getElementById("fa").classList.add("open");
+ document.getElementById("fbtns").innerHTML=`<button class="ok" onclick="flashMark(1)">✓ la sapevo</button><button class="no" onclick="flashMark(0)">✗ non la sapevo</button>`;}
+function flashMark(ok){const f=window._flash;f.marks[f.order[f.i]]=ok;f.i++;renderFlash();}
+function flashDone(){const f=window._flash;const l=byId[f.tid];const tot=l.quiz.length;
+ const score=Object.values(f.marks).reduce((a,b)=>a+b,0);const pct=Math.round(score/tot*100);const pass=pct>=70;
+ cur=f.tid;window._marks=f.marks;
+ document.getElementById("main").innerHTML=`<div class="crumb">Ripasso · esito</div>
+   <div class="flash"><div class="fresult"><b>${score}/${tot} · ${pct}%</b>
+   <p>${pass?"Bene! Questa lezione tornerà più in là (intervallo più lungo).":"Da rivedere: torna domani nel ripasso."}</p>
+   <button class="cta" onclick="finish(${pass?1:0})">Continua</button></div></div>`;
  window.scrollTo(0,0);}
 
 renderNav();
