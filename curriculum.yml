@@ -17,6 +17,17 @@
 #  - TAGLIO PRATICO per i temi AI/ML (vettorializzazione, embedding, indicizzazione, retrieval,
 #    architetture di chatbot): spiega COME si costruisce e con QUALI tool reali, più che la matematica;
 #    la formula si mette solo se serve all'intuizione (es. coseno), mai come cuore della lezione.
+#
+# POLITICA DI MIX (come comporre ogni buffer settimanale — richiesta esplicita di Cristina):
+#  - OBIETTIVO n.1 = prepararsi a possibili LAVORI → privilegia il PRATICO e l'applicabile.
+#  - "UN PO' DI TUTTO": ruota tra le aree, non fare settimane monotematiche. Mix tipico su 6 giorni:
+#    ~AI/ML + ~SWE/craft + ~business/gestionale + ~ripassi generali UNIBO (Sistemi Operativi, Reti/
+#    telecomunicazioni, Basi di Dati, Architetture…) + ~DSA/interview. Bilancia colloquio-first con cultura.
+#  - APPROFONDIMENTI: ogni tanto includi anche una lezione meno utile nell'immediato ma formativa
+#    (es. un tema di Sistemi Operativi o Telecomunicazioni), per fare cultura da ingegnere completo.
+#  - NIENTE matematica pura NON applicabile (Analisi, ecc.). MA i temi matematici CON applicazione nel
+#    suo ambito SÌ (es. Big-O/complessità è applicabile → si fa; probabilità per ML se serve, ecc.).
+#  - TONO: "professore onnisciente" — spiega tutto, collega le materie, dai il quadro grande.
 
 meta:
   owner: Cristina Ghionna
