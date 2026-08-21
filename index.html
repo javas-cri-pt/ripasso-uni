@@ -51,6 +51,9 @@ aside{border-right:1px solid var(--rule);padding:24px 16px 40px;position:sticky;
  font-size:12.5px;font-weight:600;color:var(--soft);background:var(--card);transition:.15s;display:flex;flex-direction:column;gap:3px;align-items:center}
 .quick li:hover{border-color:var(--accent);color:var(--ink)}.quick li.on{background:color-mix(in oklab,var(--accent) 12%,var(--card));border-color:var(--accent);color:var(--accent-ink)}
 .quick .qi{font-size:16px;line-height:1}
+.quick li{position:relative}
+.quick .badge{display:none}
+.quick .badge.on{display:inline-block;position:absolute;top:4px;right:6px;min-width:16px;height:16px;line-height:16px;padding:0 4px;border-radius:99px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700}
 .nav{list-style:none;font-size:13px}
 .nav li{padding:6px 9px;border-radius:8px;cursor:pointer;color:var(--soft);display:flex;gap:8px;align-items:baseline;transition:background .12s}
 .nav li:hover{background:color-mix(in oklab,var(--accent) 8%,transparent)}
@@ -151,6 +154,7 @@ button.ok.sel{background:var(--good);color:#fff;border-color:var(--good)}button.
   <div class="daynav" id="daynav"></div>
   <ul class="quick">
     <li id="q-today" onclick="openToday()"><span class="qi">◉</span>Oggi</li>
+    <li id="q-review" onclick="openReview()"><span class="qi">↻</span>Ripassa<span class="badge" id="rbadge"></span></li>
     <li id="q-hist" onclick="openHistory()"><span class="qi">✓</span>Storico</li>
   </ul>
   <ul class="nav" id="nav"></ul>
@@ -221,8 +225,19 @@ function md(s){
  return out.join("\n");}
 
 function statusOf(tid){return (ST[tid]||{}).status||"todo";}
+// ---- spaced repetition: le lezioni tornano a intervalli crescenti; le sbagliate prima ----
+const INTERVALS=[1,3,7,16,35,75];  // giorni
+function endToday(){let d=new Date();d.setHours(23,59,59,999);return d.getTime();}
+function inDays(n){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+n);return d.getTime();}
+function isDue(tid){const r=ST[tid];if(!r||r.status==="todo")return false;
+ if(!r.due)return r.status==="to-repeat";           // record vecchi senza schedulazione
+ return r.due<=endToday();}
+function dueReviews(){return DATA.lessons.filter(l=>isDue(l.topic_id)).sort((a,b)=>{
+ const ra=ST[a.topic_id],rb=ST[b.topic_id];
+ const pa=ra.status==="to-repeat"?0:1,pb=rb.status==="to-repeat"?0:1;
+ if(pa!==pb)return pa-pb;return (ra.due||0)-(rb.due||0);});}
 let cur=null;
-function setQuick(id){["q-today","q-hist"].forEach(x=>document.getElementById(x).classList.toggle("on",x===id));}
+function setQuick(id){["q-today","q-review","q-hist"].forEach(x=>document.getElementById(x).classList.toggle("on",x===id));}
 function renderNav(){
  const nav=document.getElementById("nav");let done=0;
  const AREAS={"computer-science":"Informatica","management":"Gestionale","cross-cutting":"Trasversale"};
@@ -237,7 +252,9 @@ function renderNav(){
  });
  nav.innerHTML=out;
  document.getElementById("prog").textContent=`${done}/${DATA.total} padroneggiati · ${DATA.lessons.length} lezioni pronte`;
- document.getElementById("barfill").style.width=(done/DATA.total*100)+"%";renderDay();}
+ document.getElementById("barfill").style.width=(done/DATA.total*100)+"%";renderDay();
+ const rc=dueReviews().length,rb=document.getElementById("rbadge");
+ if(rb){rb.textContent=rc||"";rb.classList.toggle("on",rc>0);}}
 
 function openLesson(tid){cur=tid;closeNav();setQuick(null);const l=byId[tid];const m=document.getElementById("main");
  document.getElementById("tbtitle").textContent=l?l.title.split("—")[0].trim():"Ripasso Uni";
@@ -277,8 +294,14 @@ function grade(){const l=byId[cur];if(!l)return;const tot=l.quiz.length;const an
  const score=Object.values(window._marks).reduce((a,b)=>a+b,0);const pct=Math.round(score/tot*100);const pass=pct>=70;
  res.innerHTML=`<div class="result"><b>${score}/${tot} · ${pct}%</b> — ${pass?"padroneggiato ✅":"da ripassare ↻ (torna tra qualche giorno)"}.
    <div class="done-btn"><button class="cta" onclick="finish(${pass?1:0})">${pass?"Segna completata":"Segna da ripassare"}</button></div></div>`;}
-function finish(pass){ST[cur]={status:pass?"mastered":"to-repeat",score:Object.values(window._marks).reduce((a,b)=>a+b,0),ts:Date.now()};
+function finish(pass){const prev=ST[cur]||{};let streak=prev.streak||0;let interval;
+ if(pass){streak++;interval=INTERVALS[Math.min(streak-1,INTERVALS.length-1)];}
+ else{streak=0;interval=1;}                                   // sbagliata → torna domani
+ ST[cur]={status:pass?"mastered":"to-repeat",score:Object.values(window._marks).reduce((a,b)=>a+b,0),
+   ts:Date.now(),due:inDays(interval),streak};
  save();window._marks={};renderNav();
+ // dopo aver chiuso: prima svuota i ripassi in scadenza, poi la prossima nuova
+ if(dueReviews().length)return openReview();
  const next=DATA.lessons.slice().reverse().find(l=>statusOf(l.topic_id)==="todo"&&isUnlocked(l));
  if(next)openLesson(next.topic_id);else openHistory();}
 
@@ -306,6 +329,20 @@ function openHistory(){cur="__hist__";closeNav();setQuick("q-hist");renderNav();
        <div class="hm">${ok?"padroneggiata":"da ripassare"} · ${d}${note}</div></div>
        <span class="harrow">›</span></li>`;}).join("")+`</ul>`;}
  m.innerHTML=`<div class="crumb">Il tuo percorso</div><h1 class="pagehead">Storico</h1>${body}`;
+ window.scrollTo(0,0);}
+
+function openReview(){cur="__rev__";closeNav();setQuick("q-review");renderNav();
+ document.getElementById("tbtitle").textContent="Ripasso";
+ const rows=dueReviews();const m=document.getElementById("main");let body;
+ if(!rows.length){body=`<p class="lead">Nessun ripasso in scadenza oggi. 👏 Le lezioni tornano da sole a <b>intervalli crescenti</b> (1, 3, 7, 16, 35… giorni): se le sai bene le rivedi di rado, se le sbagli tornano presto. Intanto fai la <b>lezione di oggi</b>.</p>`;}
+ else{body=`<p class="lead"><b>${rows.length}</b> da ripassare oggi. Tocca una lezione e rifai il quiz: se la sai la rivedrai più in là, se la sbagli torna domani.</p><ul class="hist">`+
+   rows.map(l=>{const r=ST[l.topic_id];const rep=r.status==="to-repeat";
+     return `<li class="hrow" onclick="openLesson('${l.topic_id}')">
+       <div class="hbadge ${rep?"rep":"ok"}">↻</div>
+       <div><div class="ht">${escH(l.title.split("—")[0].trim())}</div>
+       <div class="hm">${rep?"sbagliata · da rivedere":"ripasso programmato"} · ${escH(l.course)}</div></div>
+       <span class="harrow">›</span></li>`;}).join("")+`</ul>`;}
+ m.innerHTML=`<div class="crumb">Ripasso · spaced repetition</div><h1 class="pagehead">Ripassa oggi</h1>${body}`;
  window.scrollTo(0,0);}
 
 renderNav();
