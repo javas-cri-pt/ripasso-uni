@@ -156,3 +156,25 @@ In breve: lookup per chiave → **hash map**; "già visto?" / unicità → **set
 9. **Matrice:** spazio `O(V²)`, controllo di un arco `O(1)`, elencare i vicini `O(V)`. **Liste di adiacenza:** spazio `O(V+E)`, elencare i vicini `O(grado)`, controllo di un arco `O(grado)`. Su un grafo **sparso** conviene la lista di adiacenza.
 10. **BFS** usa una **coda (FIFO)** ed esplora a ondate; **DFS** usa uno **stack**/ricorsione e va in profondità. La BFS garantisce il cammino più corto (in numero di archi) solo su grafi **non pesati**.
 </details>
+
+## Esercizi
+1. **Parentesi bilanciate.** Scrivi (in pseudocodice o Python) una funzione `bilanciata(s)` che, data una stringa di parentesi `()[]{}`, restituisce `True` se sono correttamente annidate. Quale struttura dati usi e qual è la complessità?
+2. **Due numeri che sommano a un target.** Dato un array non ordinato di interi e un valore `target`, trova in tempo `O(n)` se esistono due elementi la cui somma è `target`. Come?
+3. **Scelta della struttura.** Devi gestire una coda di task con **priorità** (estrai sempre quello più urgente). Quale struttura dati scegli e che complessità hanno inserimento ed estrazione del minimo?
+
+<details><summary>Soluzioni</summary>
+
+1. Uso uno **stack**. Scorro la stringa: a ogni parentesi **aperta** faccio `push`; a ogni **chiusa** controllo che in cima ci sia l'aperta corrispondente e faccio `pop` (se lo stack è vuoto o non corrisponde → `False`). Alla fine lo stack deve essere **vuoto**. Complessità **O(n)** tempo, **O(n)** spazio nel caso peggiore.
+   ```python
+   def bilanciata(s):
+       coppie = {')':'(', ']':'[', '}':'{'}
+       st = []
+       for c in s:
+           if c in '([{': st.append(c)
+           elif c in coppie:
+               if not st or st.pop() != coppie[c]: return False
+       return not st
+   ```
+2. Uso un **set (hash set)**. Scorro l'array una volta: per ogni elemento `x` controllo se `target - x` è già nel set (lookup **O(1)** medio); se sì ho trovato la coppia, altrimenti aggiungo `x` al set. Totale **O(n)** tempo, **O(n)** spazio. (Alternativa senza memoria extra: ordinare `O(n log n)` + due puntatori.)
+3. Una **coda di priorità** implementata con un **heap** (min-heap se "più urgente" = valore minore). **Inserimento O(log n)**, **estrazione del minimo O(log n)**, lettura del minimo (`peek`) **O(1)**. Una lista ordinata darebbe estrazione O(1) ma inserimento O(n): l'heap bilancia meglio i due.
+</details>

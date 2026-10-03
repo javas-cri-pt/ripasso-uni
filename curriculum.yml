@@ -13,6 +13,10 @@
 #  - in fondo: FONTI (siti) + CONCETTI ADIACENTI (anche non trattati all'uni, es. system design);
 #  - QUIZ ~10 domande, TUTTE rispondibili SOLO col contenuto della lezione (mai chiedere dati non spiegati);
 #    risposte lavorate a scomparsa; se fallito, il topic torna in coda (spaced repetition).
+#  - ESERCIZI (sezione "## Esercizi" PRIMA del "## Quiz"): 2-4 compiti PRATICI da svolgere (non domande a
+#    risposta aperta): scrivere una funzione/query, disegnare uno schema, calcolare una complessità, modellare
+#    un caso. Numerati 1., 2., …; le soluzioni in un blocco <details><summary>Soluzioni</summary> con la stessa
+#    numerazione (codice, ragionamento, complessità). Servono a FARE, non solo a ricordare.
 #  - grounding pesca sia da argomenti STUDIATI sia da ADIACENTI rilevanti per il lavoro.
 #  - TAGLIO PRATICO per i temi AI/ML (vettorializzazione, embedding, indicizzazione, retrieval,
 #    architetture di chatbot): spiega COME si costruisce e con QUALI tool reali, più che la matematica;

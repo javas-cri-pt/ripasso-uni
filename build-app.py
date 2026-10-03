@@ -24,20 +24,25 @@ def parse_lesson(p):
     m=re.match(r"^---\n(.*?)\n---\n(.*)$", raw, re.DOTALL)
     meta=yaml.safe_load(m.group(1)) if m else {}
     body=m.group(2) if m else raw
-    # split off quiz
+    def split_qa(block):
+        """Un blocco con domande/task numerati + <details>...</details> di risposte/soluzioni → [{q,a}]."""
+        det=re.split(r"<details>.*?<summary>.*?</summary>", block, maxsplit=1, flags=re.DOTALL)
+        qpart=det[0]; apart=det[1].replace("</details>","") if len(det)>1 else ""
+        qs={int(n):t.strip() for n,t in re.findall(r"^\s*(\d+)\.\s*(.+?)(?=\n\s*\d+\.|\Z)", qpart, re.DOTALL|re.MULTILINE)}
+        ans={int(n):t.strip() for n,t in re.findall(r"^\s*(\d+)\.\s*(.+?)(?=\n\s*\d+\.|\Z)", apart, re.DOTALL|re.MULTILINE)}
+        return [{"q":qs[k],"a":ans.get(k,"")} for k in sorted(qs)]
+    # estrai gli Esercizi (compiti pratici) PRIMA, togliendoli dal corpo
+    eser=[]
+    em=re.search(r"\n##\s*Esercizi\b.*?\n(.*?)(?=\n##\s|\Z)", body, re.DOTALL|re.IGNORECASE)
+    if em:
+        eser=split_qa(em.group(1)); body=body[:em.start()]+body[em.end():]
+    # split off quiz (domande di richiamo)
     quiz=[]
     qm=re.split(r"\n##\s*Quiz.*?\n", body, maxsplit=1)
     lesson_body=qm[0].strip()
     if len(qm)>1:
-        qblock=qm[1]
-        det=re.split(r"<details>.*?<summary>.*?</summary>", qblock, maxsplit=1, flags=re.DOTALL)
-        qpart=det[0]
-        apart=det[1].replace("</details>","") if len(det)>1 else ""
-        qs={int(n):t.strip() for n,t in re.findall(r"^\s*(\d+)\.\s*(.+?)(?=\n\s*\d+\.|\Z)", qpart, re.DOTALL|re.MULTILINE)}
-        ans={int(n):t.strip() for n,t in re.findall(r"^\s*(\d+)\.\s*(.+?)(?=\n\s*\d+\.|\Z)", apart, re.DOTALL|re.MULTILINE)}
-        for k in sorted(qs):
-            quiz.append({"q":qs[k],"a":ans.get(k,"")})
-    return {"meta":meta,"body":lesson_body,"quiz":quiz}
+        quiz=split_qa(qm[1])
+    return {"meta":meta,"body":lesson_body,"quiz":quiz,"esercizi":eser}
 
 lessons=[]
 for p in sorted(glob.glob(str(ROOT/"lessons"/"*.md"))):
@@ -51,6 +56,7 @@ for p in sorted(glob.glob(str(ROOT/"lessons"/"*.md"))):
         "adjacent":d["meta"].get("adjacent",[]),
         "body":d["body"],
         "quiz":d["quiz"],
+        "esercizi":d["esercizi"],
     })
 
 order=topic_index()
@@ -342,8 +348,14 @@ function openLesson(tid){cur=tid;closeNav();setQuick(null);const l=byId[tid];con
    <div class="qbtns"><button class="rev" onclick="reveal(${idx})">Mostra risposta</button>
    <button class="ok" onclick="mark(${idx},1)">✓ la sapevo</button>
    <button class="no" onclick="mark(${idx},0)">✗ non la sapevo</button></div></div>`).join("");
+ const es=(l.esercizi||[]);
+ const eserHtml=es.length?`<div class="quiz"><div class="quiz-h"><h2>Esercizi</h2><span class="sub">${es.length} da svolgere · prova, poi rivela la soluzione</span></div>`+
+   es.map((x,i)=>`<div class="qcard" id="e${i}"><div class="qq">${i+1}. ${md(x.q).replace(/^<p>|<\/p>$/g,"")}</div>
+     <div class="qa">${md(x.a)}</div>
+     <div class="qbtns"><button class="rev" onclick="document.getElementById('e${i}').classList.add('open')">Mostra soluzione</button></div></div>`).join("")+`</div>`:"";
  m.innerHTML=`<div class="crumb">${escH(l.area)} · ${escH(l.course)}${l.day?" · Giorno "+l.day:""}</div>
    <div class="lesson">${md(l.body)}</div>
+   ${eserHtml}
    <div class="quiz"><div class="quiz-h"><h2>Quiz</h2><span class="sub">${l.quiz.length} domande · segna cosa sapevi</span></div>${q}<div id="res"></div></div>
    <section class="notes"><h2>✎ Le mie note</h2>
      <p class="hint">Appunti tuoi — es. un approfondimento fatto con l'AI che vuoi ritrovare. Si salvano da soli su questo dispositivo.</p>
