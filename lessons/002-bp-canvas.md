@@ -22,6 +22,29 @@ Il **Business Model Canvas (BMC)** è un framework, ideato da **Alexander Osterw
 
 **Lato destro = il mercato/valore. Lato sinistro = l'infrastruttura/costo. In mezzo, la value proposition.**
 
+<svg viewBox="0 0 640 300" style="max-width:100%;height:auto;font-family:inherit">
+  <g font-size="11" fill="var(--ink)" text-anchor="middle">
+    <rect x="10" y="10" width="120" height="196" rx="6" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="70" y="30" font-weight="700">Key</text><text x="70" y="44" font-weight="700">Partnerships</text><text x="70" y="66" fill="var(--muted)" font-size="10">chi ti aiuta</text>
+    <rect x="134" y="10" width="120" height="96" rx="6" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="194" y="30" font-weight="700">Key</text><text x="194" y="44" font-weight="700">Activities</text><text x="194" y="66" fill="var(--muted)" font-size="10">cosa fai</text>
+    <rect x="134" y="110" width="120" height="96" rx="6" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="194" y="130" font-weight="700">Key</text><text x="194" y="144" font-weight="700">Resources</text><text x="194" y="166" fill="var(--muted)" font-size="10">cosa hai</text>
+    <rect x="258" y="10" width="120" height="196" rx="6" fill="var(--card)" stroke="var(--accent)" stroke-width="1.8"/>
+    <text x="318" y="34" font-weight="700">Value</text><text x="318" y="48" font-weight="700">Propositions</text><text x="318" y="72" fill="var(--muted)" font-size="10">il valore</text><text x="318" y="86" fill="var(--muted)" font-size="10">(il cuore)</text>
+    <rect x="382" y="10" width="120" height="96" rx="6" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="442" y="30" font-weight="700">Customer</text><text x="442" y="44" font-weight="700">Relationships</text><text x="442" y="66" fill="var(--muted)" font-size="10">che rapporto</text>
+    <rect x="382" y="110" width="120" height="96" rx="6" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="442" y="136" font-weight="700">Channels</text><text x="442" y="158" fill="var(--muted)" font-size="10">come raggiungi</text>
+    <rect x="506" y="10" width="124" height="196" rx="6" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="568" y="30" font-weight="700">Customer</text><text x="568" y="44" font-weight="700">Segments</text><text x="568" y="66" fill="var(--muted)" font-size="10">per chi</text>
+    <rect x="10" y="210" width="308" height="80" rx="6" fill="var(--card2)" stroke="var(--rule)"/>
+    <text x="164" y="240" font-weight="700">Cost Structure</text><text x="164" y="262" fill="var(--muted)" font-size="10">quanto ti costa (sinistra = costo)</text>
+    <rect x="322" y="210" width="308" height="80" rx="6" fill="var(--card2)" stroke="var(--rule)"/>
+    <text x="476" y="240" font-weight="700">Revenue Streams</text><text x="476" y="262" fill="var(--muted)" font-size="10">come guadagni (destra = valore)</text>
+  </g>
+</svg>
+
 1. **Customer Segments (segmenti di clientela):** *per chi* crei valore. Chi sono i gruppi distinti di clienti/utenti. Un modello può servire più segmenti (es. un marketplace serve *compratori* e *venditori* — mercato "a due lati").
 2. **Value Propositions (proposte di valore):** *quale problema risolvi* o quale bisogno soddisfi, e perché il cliente sceglie te. È il cuore: il pacchetto di prodotti/servizi che crea valore per un segmento (es. "risparmio di tempo", "prezzo più basso", "meno ansia").
 3. **Channels (canali):** *come raggiungi e consegni* al cliente — vendita, distribuzione, comunicazione (sito, app, negozio, forza vendita, partner).

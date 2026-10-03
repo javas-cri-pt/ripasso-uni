@@ -150,7 +150,7 @@ Il retrieval smette di essere un passo fisso e diventa una **decisione** presa d
 
 Ho confrontato diverse architetture RAG sullo **stesso set di domande**, misurando token spesi per risposta e qualità della risposta.
 
-Un approccio **ibrido con router** ha ridotto i token usati per risposta di circa l'**88%** (da **~1284 a ~150 token**) **mantenendo** la qualità: punteggio qualità **4,00 su 5** contro **3,92** del baseline più pesante. Una variante **graph-RAG puro** invece ha **perso**, con qualità **3,17**.
+Un approccio **ibrido con router** ha ridotto i token usati per risposta di circa l'**87%** (da **~1282 a ~165 token**, circa un ottavo) **mantenendo** la qualità: punteggio qualità **4,00 su 5** contro **3,92** del baseline più pesante (il *full-context stuffing*, cioè infilare tutto il contesto nel prompt). Una variante **graph-RAG puro** spingeva i token ancora più in basso (~150) **ma la qualità crollava a 3,17**: falliva sulle domande *aggregate* (quelle senza un'entità nominata, es. "elenca i clienti in trattativa"). Proprio quel fallimento è la ragione del **router + fallback obbligatorio** — il numero conta meno della diagnosi.
 
 Cos'è un **router** qui: è il componente che, ricevuta una domanda, **sceglie la strategia di retrieval** giusta per *quella* query — ad esempio decide se fare ricerca densa, lessicale, ibrida, o addirittura se serve recuperare. Invece di applicare sempre la pipeline più pesante a tutte le domande, il router indirizza ognuna verso il percorso minimo sufficiente. È così che l'ibrido+router taglia i token: non spreca contesto su domande semplici.
 
@@ -210,7 +210,7 @@ RAG aggiunge complessità e latenza: non è gratis. Evitalo quando:
 6. Un **router** riceve la domanda e **sceglie la strategia di retrieval** giusta per quella query (densa, lessicale, ibrida, o nessun recupero), indirizzandola verso il percorso minimo sufficiente invece di applicare sempre la pipeline più pesante.
 7. **Graph RAG**: costruisci un knowledge graph (entità = nodi, relazioni = archi) dai documenti e recuperi navigando il grafo, utile per domande multi-hop e relazionali. **Agentic RAG**: un agente decide dinamicamente se/cosa/quante volte recuperare, riformula, usa più fonti/tool e itera. In breve: Graph cambia la *struttura dati* del recupero; Agentic cambia il *controllo* (chi decide come recuperare).
 8. **RRF = Reciprocal Rank Fusion**. Serve a fondere due classifiche diverse (densa e lessicale) sommando per ogni documento `1/(k+rango)` sulle due liste: usa le posizioni, non i punteggi incomparabili, e premia i documenti in alto in entrambe le liste.
-9. I token sono scesi di circa l'**88%** (da ~1284 a ~150 per risposta) e la qualità **NON** è calata: **4,00** su 5 contro **3,92** del baseline più pesante.
+9. I token sono scesi di circa l'**87%** (da ~1282 a ~165 per risposta, circa un ottavo) e la qualità **NON** è calata: **4,00** su 5 contro **3,92** del baseline più pesante. (La variante solo-grafo scendeva anche più in basso ma perdeva qualità, 3,17.)
 10. Due tra: (a) la conoscenza è già nel modello (nozioni pubbliche note); (b) serve solo comportamento/stile/formato → meglio fine-tuning; (c) i dati stanno in un DB strutturato → meglio text-to-SQL.
 
 </details>

@@ -95,6 +95,27 @@ Un giro completo tipico: `git switch -c feature/x` → modifichi → `git add .`
 
 **Perché si lavora su branch:** per **isolare** una modifica (una feature, un fix) senza rompere `main`. `main` deve restare sempre in uno stato funzionante — è la versione "buona", spesso quella che va in produzione. Tu ti crei un branch, ci fai tutti i tuoi commit sperimentali, e finché non è pronto il resto del team non ne risente. Se l'idea non funziona, cancelli il branch e `main` non se n'è nemmeno accorto.
 
+<svg viewBox="0 0 680 170" style="max-width:100%;height:auto;font-family:inherit">
+  <g stroke="var(--rule)" stroke-width="2" fill="none">
+    <path d="M40,120 L640,120"/>
+    <path d="M180,120 C240,120 250,55 300,55 L440,55 C500,55 500,110 520,120"/>
+  </g>
+  <g font-size="11.5" fill="var(--ink)" text-anchor="middle">
+    <circle cx="60" cy="120" r="11" fill="var(--card)" stroke="var(--rule)" stroke-width="1.6"/>
+    <circle cx="180" cy="120" r="11" fill="var(--card)" stroke="var(--rule)" stroke-width="1.6"/>
+    <circle cx="300" cy="55" r="11" fill="var(--card)" stroke="var(--accent)" stroke-width="1.8"/>
+    <circle cx="420" cy="55" r="11" fill="var(--card)" stroke="var(--accent)" stroke-width="1.8"/>
+    <circle cx="520" cy="120" r="12" fill="var(--card)" stroke="var(--good)" stroke-width="2"/>
+    <circle cx="620" cy="120" r="11" fill="var(--card)" stroke="var(--rule)" stroke-width="1.6"/>
+    <text x="60" y="150" fill="var(--muted)">main</text>
+    <text x="360" y="34" fill="var(--accent)">feature/login</text>
+    <text x="520" y="150" fill="var(--good)">merge</text>
+    <text x="180" y="150" fill="var(--muted)" font-size="10">branch parte qui</text>
+  </g>
+</svg>
+
+<figcaption style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center">Un branch <code>feature/login</code> parte da un commit di <code>main</code>, accumula i suoi commit in isolamento, e il <b>merge</b> li reintegra in <code>main</code> con un commit di fusione. Se i due lati hanno toccato le stesse righe, Git segnala un <b>conflitto</b> da risolvere a mano.</figcaption>
+
 **Merge (fusione):** unire i commit di un branch in un altro. Tipicamente: hai finito `feature/login`, la vuoi in `main`. Il merge prende il lavoro del tuo branch e lo integra. Nella maggioranza dei casi Git lo fa **da solo**, perché i due branch hanno toccato file o righe diverse.
 
 **Merge conflict (conflitto di merge):** succede quando **due branch hanno modificato le stesse righe dello stesso file** in modi diversi. Git non può indovinare quale versione tenere, quindi **si ferma e chiede a te** di decidere. Nel file comparirà una zona marcata così:

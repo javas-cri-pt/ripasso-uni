@@ -452,4 +452,22 @@ if(DATA.lessons.length){openToday();}else{document.getElementById("main").innerH
 
 out=APP.replace("__DATA__",DATA)
 (ROOT/"index.html").write_text(out)
-print(f"index.html scritta · {len(lessons)} lezione/i · {len(order)} topic totali")
+
+# --- stato del buffer (rende VISIBILE quando il loop va rilanciato) ---
+import datetime
+maxday=max([(l.get("day") or 0) for l in lessons] or [0])
+status=""
+sd=(CURR.get("meta",{}) or {}).get("start_date")
+if sd:
+    try:
+        start=datetime.date.fromisoformat(str(sd)); today=datetime.date.today()
+        d=start; c=0
+        while d<=today:
+            if d.weekday()!=5: c+=1   # salta il sabato (dom-ven), come il gating JS
+            d+=datetime.timedelta(days=1)
+        studyday=max(c,1); margin=maxday-studyday
+        flag="  ⚠ RIGENERA: buffer quasi finito, lancia il loop" if margin<3 else ""
+        status=f" · oggi ~giorno {studyday}, buffer fino a {maxday} (margine {margin}){flag}"
+    except Exception:
+        status=""
+print(f"index.html scritta · {len(lessons)} lezione/i · {len(order)} topic totali · maxDay {maxday}{status}")

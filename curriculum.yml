@@ -36,6 +36,9 @@ meta:
     polito: /Users/cri/Desktop/xsonal/POLITO
   areas: [computer-science, management, cross-cutting]
   status_values: [new, reviewing, mastered, to-repeat]
+  # data di riferimento per stimare il margine di buffer al build (gating dom-ven).
+  # e' una stima: il gating vero parte dal primo giorno di apertura, salvato nel browser.
+  start_date: "2026-08-19"
 
 # ─────────────────────────────  COMPUTER SCIENCE (UNIBO)  ─────────────────────────────
 courses:
